@@ -3,11 +3,15 @@
 namespace App\Repositories;
 
 use App\Http\Requests\SubscriptionRequest;
+use App\Http\Resources\SubscriptionCollection;
 use App\Http\Resources\SubscriptionResource;
 use App\Models\Subscription;
+use App\Models\Transaction;
 use App\Repositories\Interfaces\SubscriptionInterface;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class SubscriptionRepository implements SubscriptionInterface
 {
@@ -34,7 +38,13 @@ class SubscriptionRepository implements SubscriptionInterface
     public function update(int $subscriptionId, array $credentials): JsonResponse
     {
         try {
-            $subscription = Subscription::where('id', $subscriptionId)->update($credentials);
+            $subscriptionUpdatedId = Subscription::where('id', $subscriptionId)->update($credentials);
+        } catch (\Exception $exception) {
+            throw new HttpResponseException(response()->error(['errors' => $exception->getMessage()], 404));
+        }
+
+        try {
+            $subscription = Subscription::where('id', $subscriptionUpdatedId)->firstOrFail();
         } catch (\Exception $exception) {
             throw new HttpResponseException(response()->error(['errors' => $exception->getMessage()], 404));
         }
@@ -46,6 +56,7 @@ class SubscriptionRepository implements SubscriptionInterface
     {
         try {
             Subscription::where('id', $subscriptionId)->delete();
+            Transaction::where('subscription_id', $subscriptionId)->delete();
         } catch (\Exception $exception) {
             throw new HttpResponseException(response()->error(['errors' => $exception->getMessage()], 404));
         }
@@ -61,6 +72,6 @@ class SubscriptionRepository implements SubscriptionInterface
             throw new HttpResponseException(response()->error(['errors' => $exception->getMessage()], 404));
         }
 
-        return response()->success(new SubscriptionResource($subscription), 200);
+        return response()->success(new SubscriptionCollection($subscription), 200);
     }
 }

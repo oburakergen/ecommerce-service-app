@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Subscription;
+use App\Policies\SubscriptionPolicy;
 use App\Repositories\Interfaces\SubscriptionInterface;
 use App\Repositories\SubscriptionRepository;
 use Illuminate\Support\Facades\Response;

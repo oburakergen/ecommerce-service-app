@@ -18,12 +18,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::controller( SubscriptionController::class)->group(function () {
-    Route::post('user/{userId}/subscription', 'store');
-    Route::get('user/{userId}/subscription', 'show');
-    Route::put('user/{userId}/subscription/{subscriptionId}', 'update');
-    Route::delete('user/{userId}/subscription/', 'destroy');
+Route::controller( SubscriptionController::class)->prefix('user')->group(function () {
+    Route::post('{userId}/subscription', 'store');
+    Route::get('{userId}/subscription', 'show');
+    Route::put('{userId}/subscription/{subscriptionId}', 'update');
+    Route::delete('{userId}/subscription', 'destroy');
 });
-
+Route::post('user/{userId}/transaction', 'App\Http\Controllers\TransactionController@store');
 Route::post('/login', 'App\Http\Controllers\AuthController@login');
 Route::post('/register', 'App\Http\Controllers\AuthController@register');

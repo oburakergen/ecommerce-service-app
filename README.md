@@ -47,7 +47,7 @@ docker compose up -d
 ## Apiyi test etmek için public klasörünün içinceki postman collections kullanabilirsiniz.
 
 # Postman Collection
-./public/postman_collection.json
+./public/Ecommerce App.postman_collection.json
 
 
 

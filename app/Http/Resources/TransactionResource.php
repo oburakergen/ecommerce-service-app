@@ -15,7 +15,7 @@ class TransactionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'subscription_id' => $this->subscription()->id,
+            'subscription_id' => $this->subscription->renewed_at,
             'price' => $this->price,
         ];
     }

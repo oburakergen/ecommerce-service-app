@@ -15,7 +15,7 @@ class SubscriptionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user' => [
+            'users' => [
                 'name' => $this->user->name,
                 'email'=> $this->user->email,
             ],

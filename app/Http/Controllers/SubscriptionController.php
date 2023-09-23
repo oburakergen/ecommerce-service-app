@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SubscriptionRequest;
+use App\Models\User;
 use App\Repositories\SubscriptionRepository;
 use Illuminate\Http\Request;
 
@@ -12,11 +13,14 @@ class SubscriptionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(SubscriptionRequest $request, int $userId)
+    public function store(SubscriptionRequest $request, User $userId)
     {
+        if (!$this->authorize('create', $userId)) {
+            return response()->error(['errors' => 'Sadece örnek olması için subscription ekleme işlemlerinde userId kontrolü yapıldı. 1 nolu kullanıcı ile login olup deneyebilirsiniz.'], 403);
+        }
         $credentials = $request->validated();
 
-        return $this->subscriptionRepository->create($userId, $credentials);
+        return $this->subscriptionRepository->create($userId->id, $credentials);
     }
 
     /**
@@ -38,16 +42,20 @@ class SubscriptionController extends Controller
             'expired_at' => ['date'],
         ]);
 
-        dd($credentials);
-
         return $this->subscriptionRepository->update($subscriptionId, $credentials);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $subscriptionId)
+    public function destroy(Request $request)
     {
+        $credentials = $request->validate([
+            'subscription_id' => ['required', 'integer'],
+        ]);
+
+        $subscriptionId = (int)$credentials['subscription_id'];
+
         return $this->subscriptionRepository->delete($subscriptionId);
     }
 }
