@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Repositories\AuthRepository;
+use App\Repositories\Interfaces\AuthInterface;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -22,5 +24,16 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+    }
+
+    /**
+     * Register services.
+     */
+    public function register(): void
+    {
+        $this->app->singleton(
+            AuthInterface::class,
+            AuthRepository::class
+        );
     }
 }

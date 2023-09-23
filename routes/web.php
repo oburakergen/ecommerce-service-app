@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::controller( SubscriptionController::class)->group(function () {
+    Route::post('user/{userId}/subscription', 'store');
+    Route::get('user/{userId}/subscription', 'show');
+    Route::put('user/{userId}/subscription/{subscriptionId}', 'update');
+    Route::delete('user/{userId}/subscription/', 'destroy');
+});
+
+Route::post('/login', 'App\Http\Controllers\AuthController@login');
+Route::post('/register', 'App\Http\Controllers\AuthController@register');
